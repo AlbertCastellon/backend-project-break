@@ -28,6 +28,7 @@ router.get('/dashboard', async (req, res) => {
 })
 router.post('/dashboard', async (req, res) => {
     try {
+        console.log(req.body)
         const newProduct = await Product.create(req.body);
         res.status(201).send(newProduct);
     } catch (error) {
@@ -48,8 +49,8 @@ router.get('/dashboard/new', (req, res) => {
             <title>Document</title>
         </head>
         <body>
-            <h1>Nuevo Producto</h1
-            <form action="/dashboard2" method="post" name="new_product">
+            <h1>Nuevo Producto</h1>
+            <form action="/dashboard" method="post" name="new_product">
                 <ul>
                     <li>
                         <label for="name">Nombre del producto</label>

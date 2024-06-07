@@ -5,7 +5,7 @@ const { dbConnection } = require('./src/config/db');
 const productRoutes = require('./src/routes/productRoutes');
 
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }))
 app.use('/', productRoutes);
 
 dbConnection();
