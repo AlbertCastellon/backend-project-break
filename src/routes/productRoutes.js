@@ -15,13 +15,48 @@ const router = express.Router()
 const Product = require("../models/Product");
 
 router.get('/products', async (req, res) => {
-    res.json(await Product.find({}))
+    const productList = await Product.find({})
+    const htmlProducts = productList.map(element => 
+        `<h2>${element.name}</h2>
+        <img src="${element.image}">
+        <h3>Categoría: ${element.category}</h3>
+        <p>${element.description}</p>
+        <h3>Talla: ${element.size}</h3>
+        <h3>Precio: ${element.price}€</h3>`
+    )
+    console.log(htmlProducts.join(''))
+    res.send(`<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Document</title>
+        </head>
+        <body>
+            <h1>Catálogo</h1>${htmlProducts.join('')}
+            </body>
+        </html>`)
 })
 
 router.get('/products/:productId', async (req, res) => {
     const productId = req.params.productId
     const product = await Product.findById(productId);
-    res.json(product)
+    res.send(`<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Document</title>
+        </head>
+        <body>
+            <h1>${product.name}</h1>
+            <img src="${product.image}">
+            <h3>Categoría: ${product.category}</h3>
+            <p>${product.description}</p>
+            <h3>Talla: ${product.size}</h3>
+            <h3>Precio: ${product.price}€</h3>
+        </body>
+        </html>`)
 })
 router.get('/dashboard', async (req, res) => {
     res.json(await Product.find())
