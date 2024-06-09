@@ -13,18 +13,14 @@
 const express = require('express')
 const router = express.Router()
 const Product = require("../models/Product");
+const { getProductById, getAllProducts, getAllProductsDashboard, modifyDeleteForm } = require('../controllers/productController')
+const methodOverride = require('method-override')
+
+router.use(methodOverride('_method'))
 
 router.get('/products', async (req, res) => {
     const productList = await Product.find({})
-    const htmlProducts = productList.map(element => 
-        `<h2>${element.name}</h2>
-        <img src="${element.image}">
-        <h3>Categoría: ${element.category}</h3>
-        <p>${element.description}</p>
-        <h3>Talla: ${element.size}</h3>
-        <h3>Precio: ${element.price}€</h3>`
-    )
-    console.log(htmlProducts.join(''))
+    const productsCards = getAllProducts(productList, `products`)
     res.send(`<!DOCTYPE html>
         <html lang="en">
         <head>
@@ -33,7 +29,7 @@ router.get('/products', async (req, res) => {
             <title>Document</title>
         </head>
         <body>
-            <h1>Catálogo</h1>${htmlProducts.join('')}
+            <h1>Catálogo</h1>${productsCards}
             </body>
         </html>`)
 })
@@ -41,6 +37,13 @@ router.get('/products', async (req, res) => {
 router.get('/products/:productId', async (req, res) => {
     const productId = req.params.productId
     const product = await Product.findById(productId);
+    res.send(getProductById(product))
+})
+
+
+router.get('/dashboard', async (req, res) => {
+    const productList = await Product.find({})
+    const productsCards = getAllProductsDashboard(productList, `dashboard`)
     res.send(`<!DOCTYPE html>
         <html lang="en">
         <head>
@@ -49,17 +52,12 @@ router.get('/products/:productId', async (req, res) => {
             <title>Document</title>
         </head>
         <body>
-            <h1>${product.name}</h1>
-            <img src="${product.image}">
-            <h3>Categoría: ${product.category}</h3>
-            <p>${product.description}</p>
-            <h3>Talla: ${product.size}</h3>
-            <h3>Precio: ${product.price}€</h3>
-        </body>
+            <header>
+            <a href="/dashboard/new">Añadir producto</a>
+            </header>
+            <h1>Catálogo</h1>${productsCards}
+            </body>
         </html>`)
-})
-router.get('/dashboard', async (req, res) => {
-    res.json(await Product.find())
 })
 router.post('/dashboard', async (req, res) => {
     try {
@@ -112,7 +110,7 @@ router.get('/dashboard/new', (req, res) => {
                         <input type="number" name="price" id="price">
                     </li>
                 <ul>
-                <input type="submit" name="submit" id="submit">
+                <input type="submit" name="submit" id="submit" value="Añadir Producto">
             </form>
         </body>
         </html>`)
@@ -123,6 +121,20 @@ router.get('/dashboard/new', (req, res) => {
             .send({ message: "There was a problem trying get form" });
     }
 })
+
+router.get('/dashboard/:productId', async (req, res) => {
+    const productId = req.params.productId
+    const product = await Product.findById(productId);
+    res.send(getProductById(product))
+})
+
+router.get('/dashboard/modifydelete/:productId', async (req, res) => {
+    const productId = req.params.productId
+    const product = await Product.findById(productId);
+    res.send(modifyDeleteForm(product))
+})
+
+
 /*
 router.put('/dashboard/:productId', async (req, res) => {
     const productId = req.params
@@ -143,6 +155,6 @@ router.put('/id/:id', async (req, res) => {
 router.delete('/dashboard/:productId/delete', async (req, res) => {
     const productId = req.params.productId
     await Product.findByIdAndDelete(productId);    
-    res.json({"product": "deleted"})
+    res.redirect('/dashboard')
 })
 module.exports = router
