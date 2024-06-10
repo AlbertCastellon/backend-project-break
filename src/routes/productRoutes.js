@@ -63,7 +63,7 @@ router.post('/dashboard', async (req, res) => {
     try {
         console.log(req.body)
         const newProduct = await Product.create(req.body);
-        res.status(201).send(newProduct);
+        res.status(201).redirect('/dashboard');
     } catch (error) {
         console.error(error);
         res
@@ -136,13 +136,7 @@ router.get('/dashboard/modifydelete/:productId', async (req, res) => {
 
 
 /*
-router.put('/dashboard/:productId', async (req, res) => {
-    const productId = req.params
-    const product = await Product.findOne({ 'id': `${productId.id}` }, 'title completed');
-    product.completed = true;
-    product.save()
-    res.json(product)
-})
+
 
 router.put('/id/:id', async (req, res) => {
     const taskId = req.params

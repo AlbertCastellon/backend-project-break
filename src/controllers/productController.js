@@ -84,7 +84,7 @@ const modifyDeleteForm = product => {
             <input type="submit" name="submit" id="submit" value="Modificar">
         </form>
         <form action="/dashboard/:productId/delete?_method=DELETE" method="post">
-            <input type="submit" name="submit" id="submit" value="Eliminar">
+            <button type="submit">Eliminar</button>
         </form>
     </body>
     </html>`
