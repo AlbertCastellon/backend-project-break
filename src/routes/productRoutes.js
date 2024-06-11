@@ -9,6 +9,17 @@
     GET /dashboard/:productId/edit: Devuelve el formulario para editar un producto.
     PUT /dashboard/:productId: Actualiza un producto.
     DELETE /dashboard/:productId/delete: Elimina un producto.
+
+
+     <form action="/products/" method="get">
+                    <select name="category" id="product_category">
+                        <option value="Camisetas">Camisetas</option>
+                        <option value="Pantalones">Pantalones</option>
+                        <option value="Zapatos">Zapatos</option>
+                        <option value="Accesorios">Accesorios</option>
+                    </select>
+                    <button type="submit">Ver Categoria</button>
+                </form>
 */
 const express = require('express')
 const router = express.Router()
@@ -30,7 +41,14 @@ router.get('/products', async (req, res) => {
                 <title>Document</title>
             </head>
             <body>
-                <h1>Catálogo</h1>${productsCards}
+                <h1>Catálogo</h1>
+               <a href="/products/Camisetas">Camisetas</a>
+               <a href="/products/Pantalones">Pantalones</a>
+               <a href="/products/Accesorios">Accesorios</a>
+               <a href="/products/Zapatos">Zapatos</a>
+
+                ${productsCards}
+                
                 </body>
             </html>`)
     } catch (error) {
@@ -40,6 +58,34 @@ router.get('/products', async (req, res) => {
             .send({ message: "There was a problem trying to get the products" });
     }
     
+})
+
+router.get('/products/:category', async (req, res) => {
+    try {
+        console.log(req.params)
+        console.log(req.params.category)
+        const productCategory = req.params.category
+        const products = await Product.find(req.params)
+        const productsCards = getAllProducts(products, `products/${productCategory}`)
+        res.send(`<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Document</title>
+            </head>
+            <body>
+                <h1>${productCategory}</h1>
+                ${productsCards}
+
+            </body>
+            </html>`)
+    }catch (error) {
+        console.error(error);
+        res
+            .status(500)
+            .send({ message: "There was a problem trying to get the products by category" });
+    }
 })
 
 router.get('/products/:productId', async (req, res) => {
@@ -70,6 +116,7 @@ router.get('/dashboard', async (req, res) => {
             <body>
                 <header>
                 <a href="/dashboard/new">Añadir producto</a>
+               
                 </header>
                 <h1>Catálogo</h1>${productsCards}
                 </body>
@@ -174,16 +221,24 @@ router.get('/dashboard/modifydelete/:productId', async (req, res) => {
 })
 
 
-/*
 
 
-router.put('/id/:id', async (req, res) => {
-    const taskId = req.params
-    const task = await Task.findOne({ 'id': `${taskId.id}` }, 'title completed');
-    task.title = req.body.title;
-    task.save()
-    res.json(task)
+
+router.put('/dashboard/:productId', async (req, res) => {
+    try{
+        const productId = req.params.productId
+        await Product.findByIdAndUpdate(productId, req.body);
+        res.redirect('/dashboard')
+    }catch (error) {
+        console.error(error);
+        res
+            .status(500)
+            .send({ message: "There was a problem modifying the product" })
+    }
+    
 })
+/*
+Añadir pop up de confirmacion
 */
 router.delete('/dashboard/:productId/delete', async (req, res) => {
     try {

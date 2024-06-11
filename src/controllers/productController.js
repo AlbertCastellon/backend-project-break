@@ -54,7 +54,7 @@ const modifyDeleteForm = product => {
     </head>
     <body>
         <h1>Modificar o Eliminar Producto</h1>
-        <form action="/dashboard" method="post" name="new_product">
+        <form action="/dashboard/${product._id}?_method=PUT" method="post" name="new_product">
             <ul>
                 <li>
                     <label for="name">Nombre del producto</label>
@@ -81,9 +81,9 @@ const modifyDeleteForm = product => {
                     <input type="number" name="price" id="price" value="${product.price}">
                 </li>
             <ul>
-            <input type="submit" name="submit" id="submit" value="Modificar">
+            <button type="submit">Modificar</button>
         </form>
-        <form action="/dashboard/:productId/delete?_method=DELETE" method="post">
+        <form action="/dashboard/${product._id}/delete?_method=DELETE" method="post">
             <button type="submit">Eliminar</button>
         </form>
     </body>
