@@ -1,12 +1,17 @@
 const jwt = require('jsonwebtoken');
+const bcrypt= require('bcrypt')
+const crypto = require('crypto');
+const secret = crypto.randomBytes(64).toString('hex');
+const hashedSecret = bcrypt.hashSync(secret, 10);
 
-function generateToken(user) {
-    return jwt.sign({ user: user.id }, 'tu_secreto_secreto', { expiresIn: '1h' });
+
+function generateToken(admin) {
+    return jwt.sign({ admin: admin.id }, 'tu_secreto_secreto', { expiresIn: '1h' });
 }
 
 function verifyToken(req, res, next) {
     const token = req.session.token;
-    
+    console.log(req.session.token)
     if (!token) {
         return res.status(401).json({ message: 'Token no proporcionado' });
     }
@@ -16,9 +21,9 @@ function verifyToken(req, res, next) {
         return res.status(401).json({ message: 'Token inválido', error: err.message });
     }
     
-    req.user = decoded.user;
+    req.admin = decoded.admin;
     next();
     
     });
 }
-module.exports = {generateToken, verifyToken}
+module.exports = {generateToken, verifyToken, hashedSecret}

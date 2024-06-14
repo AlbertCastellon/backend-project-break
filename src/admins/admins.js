@@ -3,3 +3,5 @@ const admins = [
     { id: 2, username: 'admin2', password: 'contraseña246', name: 'Pedro' },
     { id: 3, username: 'admin3', password: 'contraseña369', name: 'Carlos' },
 ]
+
+module.exports = admins
