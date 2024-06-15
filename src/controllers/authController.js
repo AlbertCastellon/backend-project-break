@@ -5,7 +5,7 @@ const secret = crypto.randomBytes(64).toString('hex');
 const hashedSecret = bcrypt.hashSync(secret, 10);
 
 
-function generateToken(admin) {
+function  generateToken(admin) {
     return jwt.sign({ admin: admin.id }, 'tu_secreto_secreto', { expiresIn: '1h' });
 }
 

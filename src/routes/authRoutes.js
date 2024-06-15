@@ -3,6 +3,9 @@ const admins = require('../admins/admins')
 const session = require('express-session');
 const router = express.Router();
 const {generateToken, verifyToken} = require('../controllers/authController')
+const Product = require("../models/Product");
+const { getProductById, getAllProducts, getAllProductsDashboard, modifyDeleteForm } = require('../controllers/productController')
+const methodOverride = require('method-override')
 
 router.get('/admins', (req, res) => {
     if(!req.session.token) {
@@ -25,29 +28,29 @@ router.get('/admins', (req, res) => {
     
 })
 
-router.post('/dashboard/login', (req, res) => {
+router.post('/dashboard/login', async (req, res) => {
     const { username, password } = req.body;
     const admin = admins.find(
       (ad) => ad.username === username && ad.password === password
     );
   
     if (admin) {
-      const token = generateToken(admin);
+      const token = await generateToken(admin);
       req.session.token = token;
-      console.log(req.session.token)
       res.redirect('/dashboard');
     } else {
       res.status(401).json({ message: 'Credenciales incorrectas' });
     }
   });
+/*
+ verifyToken,
+  const adminId = req.admin;
 
-
-
-router.get('/dashboard', verifyToken, async (req, res) => {
+  const admin = admins.find((ad) => ad.id === adminId);
+*/
+router.get('/dashboard', async (req, res) => {
     try {
-        const adminId = req.admin;
 
-        const admin = admins.find((ad) => ad.id === adminId);
     
         const productList = await Product.find({})
         const productsCards = getAllProductsDashboard(productList, `dashboard`)

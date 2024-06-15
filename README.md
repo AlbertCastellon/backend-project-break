@@ -36,3 +36,11 @@ Para este proyecto necesitas en tu archivo env las siguientes variables
 `MONGO_URI`
 
 `PORT` (OPCIONAL)
+
+## Cosas a mejorar, añadir o arreglar
+
+-Hacer que la autentificación funcione correctamente.
+-Añadir un middleware para gestionar errores.
+-Añadir estilos.
+-Reordenar y hacer el código mas fácil de entender.
+-Reestudiar la estructura de carpetas y archivos y lo que va en ellos.
